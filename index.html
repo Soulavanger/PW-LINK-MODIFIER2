@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PW LINK MODIFIER</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 40px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        h1 {
+            margin-top: 0;
+            font-size: 32px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+            font-size: 18px;
+        }
+
+        .input-group input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            border-bottom: 2px solid #ccc;
+            background-color: #f9f9f9;
+        }
+
+        .input-group button {
+            margin-top: 5px;
+            padding: 8px 16px;
+            font-size: 14px;
+            cursor: pointer;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+
+        .input-group button:hover {
+            background-color: #c0392b;
+        }
+
+        .button-container {
+            margin-bottom: 20px;
+        }
+
+        .button-container button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+
+        .button-container button:hover {
+            background-color: #45a049;
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            border: 2px dashed #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            word-break: break-all;
+            text-align: left;
+            color: #888;
+        }
+
+        .copy-button {
+            display: block;
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #337ab7;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+
+        .copy-button:hover {
+            background-color: #286090;
+        }
+
+        .quality-buttons {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .quality-buttons button {
+            flex-grow: 1;
+            margin: 0 5px;
+        }
+
+        .quality-buttons button.active {
+            background-color: #45a049;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 10px;
+            }
+
+            .button-container button {
+                padding: 8px 16px;
+                font-size: 14px;
+            }
+
+            .result,
+            .copy-button {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>PW LINK MODIFIER</h1>
+
+        <div class="input-group">
+            <label for="text-input">LINK:</label>
+            <input type="text" id="text-input" placeholder="ENTER OR PASTE LINK HERE">
+            <button onclick="clearLink()">Clear</button>
+        </div>
+
+        <div class="input-group">
+            <label for="quality-select">SELECT QUALITY:</label>
+            <div class="quality-buttons">
+                <button onclick="setQuality('240')">240</button>
+                <button onclick="setQuality('360')">360</button>
+                <button onclick="setQuality('480')">480</button>
+                <button onclick="setQuality('720')">720</button>
+            </div>
+        </div>
+
+        <div class="button-container">
+            <button onclick="processText()">MODIFY</button>
+            <button onclick="pasteFromClipboard()">PASTE</button>
+        </div>
+
+        <div class="result" id="result">PROCESSED LINK WILL APPEAR HERE</div>
+
+        <button onclick="copyToClipboard()" id="copy-button" class="copy-button" disabled>Copy URL</button>
+    </div>
+
+    <script>
+        function processText() {
+            var text = document.getElementById("text-input").value.trim();
+            var quality = document.querySelector(".quality-buttons button.active").textContent;
+
+            var start_index = text.indexOf("https://d1d34p8vz63oiq.cloudfront.net");
+            var end_index = text.indexOf("/dash/");
+          
+            if (start_index !== -1 && end_index !== -1) {
+                var url = text.substring(start_index, end_index);
+
+                var final_url = url.replace("d1d34p8vz63oiq", "d26g5bnklkwsh4");
+                final_url = final_url.split("/dash")[0] + "/hls/" + quality + "/main.m3u8";
+
+                final_url = "yt-dlp -N 18 " + final_url; // Add "yt-dlp -N 8" in front of the processed link
+
+                document.getElementById("result").textContent = final_url;
+                document.getElementById("copy-button").disabled = false;
+            } else {
+                document.getElementById("result").textContent = "Invalid link!";
+                document.getElementById("copy-button").disabled = true;
+            }
+        }
+
+        function copyToClipboard() {
+            var copyText = document.getElementById("result");
+            var range = document.createRange();
+            range.selectNode(copyText);
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(range);
+            document.execCommand("copy");
+            window.getSelection().removeAllRanges();
+            alert("URL copied to clipboard!");
+        }
+
+        function pasteFromClipboard() {
+            navigator.clipboard.readText().then(function (text) {
+                document.getElementById("text-input").value = text;
+            });
+        }
+
+        function clearLink() {
+            document.getElementById("text-input").value = "";
+            document.getElementById("result").textContent = "PROCESSED LINK WILL APPEAR HERE";
+            document.getElementById("copy-button").disabled = true;
+        }
+
+        function setQuality(quality) {
+            var buttons = document.getElementsByClassName("quality-buttons")[0].getElementsByTagName("button");
+            for (var i = 0; i < buttons.length; i++) {
+                buttons[i].classList.remove("active");
+            }
+            event.target.classList.add("active");
+        }
+    </script>
+</body>
+</html>
