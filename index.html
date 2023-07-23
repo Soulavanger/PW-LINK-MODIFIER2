@@ -185,7 +185,7 @@
                 var final_url = url.replace("d1d34p8vz63oiq", "d26g5bnklkwsh4");
                 final_url = final_url.split("/dash")[0] + "/hls/" + quality + "/main.m3u8";
 
-                final_url = "yt-dlp -N 18 " + final_url; // Add "yt-dlp -N 8" in front of the processed link
+                final_url = "yt-dlp -N 18 -P "D:\Physicswallah" " + final_url; // Add "yt-dlp -N 8" in front of the processed link
 
                 document.getElementById("result").textContent = final_url;
                 document.getElementById("copy-button").disabled = false;
